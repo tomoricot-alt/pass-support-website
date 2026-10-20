@@ -1,0 +1,14 @@
+---
+import { readFileSync } from 'node:fs';
+import { globSync } from 'node:fs';
+import { ClientRouter } from 'astro:transitions';
+export function getStaticPaths() {
+ const files=globSync('src/content/pages/**/*.html');
+ return files.map(file=>({params:{path:file.replace('src/content/pages/','').replace(/\.html$/,'').replace(/^index$/,'')||undefined},props:{file}}));
+}
+const {file}=Astro.props;
+const html=readFileSync(file,'utf8');
+const path=Astro.url.pathname;
+const title=path==='/'?'Pass Support':`Pass Support | ${path.split('/').filter(Boolean).pop()?.toUpperCase()}`;
+---
+<!doctype html><html lang="ja"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>{title}</title><meta name="description" content="スイーツの架け橋、未来へつなぐ。株式会社パスサポートは、セミナー・商品開発・コンサルティングを通じてスイーツ事業を支援します。"/><meta name="robots" content="noindex,nofollow"/><link rel="stylesheet" href="/styles/studio-3.css"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600&display=swap"/><link rel="stylesheet" href="/styles/migration.css"/><ClientRouter /></head><body><div set:html={html}></div><script src="../scripts/site.ts"></script></body></html>

@@ -9,6 +9,14 @@ export function getStaticPaths() {
 const {file}=Astro.props;
 const html=readFileSync(file,'utf8');
 const path=Astro.url.pathname;
-const title=path==='/'?'Pass Support':`Pass Support | ${path.split('/').filter(Boolean).pop()?.toUpperCase()}`;
+const isUtilityPage=/^\/(thanks|404)\/?$/.test(path);
+const canonical=new URL(path.endsWith('/')?path:path+'/', 'https://pass-support.com');
+const titles: Record<string,string> = {
+'/':'Pass Support','/company':'Pass Support | COMPANY','/service-1':'Pass Support | SERVICE','/news':'Pass Support | NEWS','/contact':'Pass Support | CONTACT','/thanks':'Pass Support | THANK YOU','/404':'Pass Support | 404',
+'/posts/yhkUsFJl':'【展示会レポート】FABEXデザート・スイーツ2025に出展しました | Pass Support',
+'/posts/smartcity-release':'第22回デザート・スイーツ＆ベーカリー展に参加！ | Pass Support',
+'/posts/jFh5vRTe':'【視察レポート】VIBS Vietnam International Bakery Show 2024 | Pass Support'
+};
+const title=titles[path.replace(/\/$/,'')||'/'] || 'Pass Support';
 ---
-<!doctype html><html lang="ja"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>{title}</title><meta name="description" content="スイーツの架け橋、未来へつなぐ。株式会社パスサポートは、セミナー・商品開発・コンサルティングを通じてスイーツ事業を支援します。"/><meta name="robots" content="noindex,nofollow"/><link rel="stylesheet" href="/styles/studio-3.css"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600&display=swap"/><link rel="stylesheet" href="/styles/migration.css"/><ClientRouter /></head><body><div set:html={html}></div><script src="../scripts/site.ts"></script></body></html>
+<!doctype html><html lang="ja"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/><title>{title}</title><meta name="description" content="スイーツの架け橋、未来へつなぐ。株式会社パスサポートは、セミナー・商品開発・コンサルティングを通じてスイーツ事業を支援します。"/>{isUtilityPage ? <meta name="robots" content="noindex,nofollow"/> : <link rel="canonical" href={canonical.href}/>}<link rel="stylesheet" href="/styles/studio-3.css"/><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Cormorant+Garamond:wght@400;500;600&display=swap"/><link rel="stylesheet" href="/styles/migration.css"/><ClientRouter /></head><body><div set:html={html}></div><script src="../scripts/site.ts"></script></body></html>
